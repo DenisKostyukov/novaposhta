@@ -1,19 +1,65 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="list">
+      <input type="text" v-model="city" v-on:change="check()" />
+      <br />
+      <select type="text" style="margin-top: 40px">
+        <option
+          v-for="address in addresses"
+          v-bind:key="address.apiKey"
+          value="address.Description"
+        >
+          {{ address.Description }}
+        </option>
+      </select>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import Vue from "vue";
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name: "App",
+  data: function () {
+    return {
+      addresses: [],
+      city: "",
+    };
+  },
+  mounted: function () {
+    Vue.axios
+      .post("https://api.novaposhta.ua/v2.0/json/", {
+        modelName: "AddressGeneral",
+        calledMethod: "getWarehouses",
+        methodProperties: {
+          CityName: this.city,
+        },
+        apiKey: "277a5fd502b9e68b334e76f2056fb077",
+      })
+      .then((response) => {
+        this.addresses = response.data.data;
+        console.log(response.data.data);
+      });
+  },
+
+  methods: {
+    check: function () {
+      Vue.axios
+        .post("https://api.novaposhta.ua/v2.0/json/", {
+          modelName: "AddressGeneral",
+          calledMethod: "getWarehouses",
+          methodProperties: {
+            CityName: this.city,
+          },
+          apiKey: "277a5fd502b9e68b334e76f2056fb077",
+        })
+        .then((response) => {
+          this.addresses = response.data.data;
+          console.log(response.data.data);
+        });
+    },
+  },
+};
 </script>
 
 <style>
